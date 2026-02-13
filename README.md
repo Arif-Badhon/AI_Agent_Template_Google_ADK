@@ -30,71 +30,71 @@ my_agent_project/
 ├── .env.example            # Template for environment variables (API keys)
 ├── pyproject.toml          # Python dependencies (managed by uv)
 └── Dockerfile              # Deployment configuration
+```
 
-🛠️ Prerequisites
-Install uv (The modern Python package manager):
+## 🛠️ Prerequisites
 
-Bash
-curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | sh
-Install cookiecutter:
+Install **uv** (The modern Python package manager):
 
-Bash
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Install **cookiecutter**:
+
+```bash
 uv tool install cookiecutter
-⚡ Quick Start
-1. Generate a New Project
+```
+
+## ⚡ Quick Start
+
+### 1. Generate a New Project
+
 Run this single command to pull the template and scaffold your new agent:
 
-Bash
+```bash
 # Generate from GitHub (Recommended)
-uvx cookiecutter [https://github.com/YOUR_USERNAME/ai-agent-template.git](https://github.com/YOUR_USERNAME/ai-agent-template.git)
+uvx cookiecutter https://github.com/YOUR_USERNAME/ai-agent-template.git
 
 # OR Generate locally if you cloned this repo
 uvx cookiecutter .
+```
+
 You will be prompted for:
 
-project_name: (e.g., "Newsroom Agents")
+* `project_name`: (e.g., "Newsroom Agents")
+* `author_name`: (Your Name)
 
-author_name: (Your Name)
+### 2. Configure Environment
 
-2. Configure Environment
 Enter your new project folder and set up your API keys:
 
-Bash
+```bash
 cd newsroom_agents
 cp .env.example .env
 nano .env  # Add your GOOGLE_API_KEY here
-3. Run the Base Agent
+```
+
+### 3. Run the Base Agent
+
 The project comes with a pre-configured "Hello World" agent to verify your setup.
 
-Bash
+```bash
 uv run src/agents/base_agent.py
-📦 Dependency Management
-This project uses uv for all package management.
+```
 
-Add a package: uv add pandas
+## 📦 Dependency Management
 
-Run a script: uv run python script.py
+This project uses **uv** for all package management.
 
-Sync dependencies: uv sync
+* Add a package: `uv add pandas`
+* Run a script: `uv run python script.py`
+* Sync dependencies: `uv sync`
 
-🤝 Contributing
+## 🤝 Contributing
+
 Contributions are welcome! Please open an issue or submit a pull request if you have ideas for improving the agent architecture.
 
-📄 License
+## 📄 License
+
 MIT
-
-
-### How to add this:
-
-1.  Open the file:
-    ```bash
-    nano ~/Projects/Personal/ai_agent_template/README.md
-    ```
-2.  Paste the content above.
-3.  Save and exit (`Ctrl+O`, `Enter`, `Ctrl+X`).
-4.  Commit and push:
-    ```bash
-    git add README.md
-    git commit -m "Add comprehensive README documentation"
-    git push origin main
-    ```
