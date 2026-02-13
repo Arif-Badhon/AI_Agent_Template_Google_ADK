@@ -1,0 +1,7 @@
+{
+  "project_name": "Agentic AI Project",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "author_name": "Arif",
+  "description": "A production-grade Agentic AI project structure using Google ADK.",
+  "python_version": "3.12"
+}

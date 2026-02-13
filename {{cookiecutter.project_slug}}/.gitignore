@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Environment Variables (CRITICAL for AI)
+.env
+.env.local
+
+# Dependency Management
+.venv/
+env/
+venv/
+.Python
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs and Data
+*.log
+data/logs/*
+data/checkpoints/*
+!data/logs/.gitkeep
+!data/checkpoints/.gitkeep
+
+# Mac
+.DS_Store

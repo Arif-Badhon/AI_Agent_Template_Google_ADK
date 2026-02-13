@@ -1,0 +1,24 @@
+# --- Python & System ---
+__pycache__/
+*.py[cod]
+*.so
+.DS_Store
+
+# --- IDEs ---
+.vscode/
+.idea/
+
+# --- Virtual Environments (for the template dev) ---
+.venv/
+env/
+venv/
+
+# --- Temporary Test Generations ---
+# (Ignore any test projects you generated INSIDE this folder)
+newsroom_ai_agent/
+test_project/
+output/
+
+# --- Cookiecutter specific ---
+# Keep the replay files out of the repo
+.cookiecutter_replay/
