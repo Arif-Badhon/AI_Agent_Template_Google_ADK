@@ -11,7 +11,22 @@ dependencies = [
     "pydantic",
     "python-dotenv",
     "pyyaml",
-    "uv"
+    "uv",
+
+    "google-adk",
+    "google-genai",
+    
+    # Backend Core
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic-settings>=2.1.0",
+    "python-multipart>=0.0.7",
+    
+    # Utils
+    "python-dotenv",
+    "gunicorn",   # For production deployment
+    "httpx",      # For async requests
+    "loguru"      # Better logging
 ]
 
 [build-system]

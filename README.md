@@ -93,6 +93,12 @@ The project comes with a pre-configured "Hello World" agent to verify your setup
 uv run src/agents/base_agent.py
 ```
 
+### 4. Run the Backend
+
+```bash
+uv run uvicorn src.backend.main:app --reload
+```
+
 ## 📦 Dependency Management
 
 This project uses **uv** for all package management.
