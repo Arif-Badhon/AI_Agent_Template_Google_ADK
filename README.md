@@ -11,6 +11,7 @@ This template scaffolds a "Fractal" project structure designed for complex multi
 * **🏗️ Production Structure:** clearly separates `configs`, `data`, and source code (`src`) to avoid "script sprawl."
 * **🔒 Security First:** Pre-configured `.gitignore` and `.env.example` to prevent API key leaks.
 * **🐳 Docker Ready:** Includes a `Dockerfile` for containerizing your agents for cloud deployment.
+* **🚀 FastAPI Backend:** High-performance, async-ready REST API skeleton for serving your agents.
 * **✅ Automated Setup:** Post-generation hooks automatically initialize Git and install dependencies.
 
 ## 📂 Project Structure
@@ -25,6 +26,11 @@ my_agent_project/
 │   ├── agents/             # Agent logic
 │   │   ├── base/           # Abstract base classes
 │   │   └── specialized/    # Concrete agent implementations
+│   ├── backend/            # FastAPI application
+│   │   ├── api/            # API routes (v1)
+│   │   ├── core/           # App configuration & security
+│   │   ├── schemas/        # Pydantic models
+│   │   └── services/       # Business logic layer
 │   ├── core/               # Shared cognitive architecture
 │   │   ├── memory/         # Long-term & short-term memory systems
 │   │   ├── planning/       # Planning algorithms (e.g., Tree of Thoughts)
