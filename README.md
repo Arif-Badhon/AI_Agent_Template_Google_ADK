@@ -22,10 +22,20 @@ my_agent_project/
 ├── config/                 # Configuration files (YAML) for agents & models
 ├── data/                   # Local storage for logs, memory, and knowledge bases
 ├── src/
-│   ├── agents/             # Where your specific agent logic lives (e.g., Reporter, Writer)
-│   ├── core/               # Shared cognitive modules (Planner, Memory, Tools)
-│   ├── environment/        # Simulation environments for safe testing
-│   └── utils/              # Logging, metrics, and helper functions
+│   ├── agents/             # Agent logic
+│   │   ├── base/           # Abstract base classes
+│   │   └── specialized/    # Concrete agent implementations
+│   ├── core/               # Shared cognitive architecture
+│   │   ├── memory/         # Long-term & short-term memory systems
+│   │   ├── planning/       # Planning algorithms (e.g., Tree of Thoughts)
+│   │   ├── reasoning/      # Reasoning engines (e.g., Chain of Thought)
+│   │   └── tools/          # Tool definitions & integrations
+│   ├── environment/        # Simulation environments
+│   │   ├── simulators/     # External world simulators
+│   │   └── benchmarks/     # Evaluation scenarios
+│   └── utils/              # Helper functions
+│       ├── logging/        # Structured logging configuration
+│       └── helpers/        # Miscellaneous utilities
 ├── tests/                  # Pytest suite
 ├── .env.example            # Template for environment variables (API keys)
 ├── pyproject.toml          # Python dependencies (managed by uv)
