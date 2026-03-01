@@ -7,19 +7,69 @@ This template scaffolds a "Fractal" project structure designed for complex multi
 ## 🚀 Features
 
 * **⚡ uv Integration:** Pre-configured `pyproject.toml` for instant dependency resolution and locking.
+* **✨ Code Quality:** Pre-commit hooks (`ruff`, `ruff-format`) for fast formatting and linting.
 * **🧠 Cognitive Architecture:** Dedicated modules for `memory`, `planning`, and `reasoning` to support advanced agent patterns (ReAct, ToT).
-* **🏗️ Production Structure:** clearly separates `configs`, `data`, and source code (`src`) to avoid "script sprawl."
-* **🔒 Security First:** Pre-configured `.gitignore` and `.env.example` to prevent API key leaks.
-* **🐳 Docker Ready:** Includes a `Dockerfile` for containerizing your agents for cloud deployment.
+* **🏗️ Production Structure:** Clearly separates `configs`, `data`, and source code (`src`) to avoid "script sprawl."
+* **🔒 API Security & Config:** Comprehensive `.env.example` and backend security setup to prevent leaks and unauthorized access.
+* **🐳 Docker Assets:** Includes a `Dockerfile` and `docker-compose.yml` for containerizing and orchestrating your agents.
 * **🚀 FastAPI Backend:** High-performance, async-ready REST API skeleton for serving your agents.
+* **🧪 Testing Infrastructure:** Ready-to-use `pytest` suite for unit and integration testing.
+* **🔄 CI/CD Ready:** Automated GitHub Actions workflows for continuous integration.
 * **✅ Automated Setup:** Post-generation hooks automatically initialize Git and install dependencies.
 
-## 📂 Project Structure
+## �️ Tech Stack
+
+* **Language:** Python 3.10+
+* **LLM Engine:** Google Gemini (via `google-genai` SDK)
+* **Framework:** FastAPI (Backend), Pydantic (Validation)
+* **Package Management:** uv
+* **Code Quality:** Ruff, pre-commit
+* **Testing:** Pytest
+* **Containerization:** Docker, Docker Compose
+
+## 🏗️ Technical Architecture / System Logic flow
+
+```mermaid
+graph TD
+    User([User]) -->|Request| API[FastAPI Gateway]
+    API -->|Route Request| Services[Service Layer]
+    
+    Services -->|Initialize| AgentFactory[Agent Factory]
+    AgentFactory -->|Spawn| Agent[Specialized Agent]
+    
+    Agent <-->|Read/Write Context| Memory[(Memory System)]
+    Agent <-->|Execute Steps| Planning[Planning Engine]
+    Agent <-->|Determine Action| Reasoning[Reasoning Engine]
+    
+    Reasoning -.->|Call Model| LLM{Google Gemini LLM}
+    Planning -.->|Use Tools| Tools[Tool Definitions]
+    
+    Tools <-->|Simulate| Env[Environment Simulators]
+    
+    Agent -->|Response| Services
+    Services -->|Formatted JSON| API
+    API -->|Result| User
+    
+    subgraph Cognitive Architecture [src/core]
+        Memory
+        Planning
+        Reasoning
+        Tools
+    end
+    
+    subgraph Agent Logic [src/agents]
+        AgentFactory
+        Agent
+    end
+```
+
+## �📂 Project Structure
 
 Your generated project will look like this:
 
 ```text
 my_agent_project/
+├── .github/                # CI/CD workflows
 ├── config/                 # Configuration files (YAML) for agents & models
 ├── data/                   # Local storage for logs, memory, and knowledge bases
 ├── src/
@@ -43,7 +93,9 @@ my_agent_project/
 │       ├── logging/        # Structured logging configuration
 │       └── helpers/        # Miscellaneous utilities
 ├── tests/                  # Pytest suite
-├── .env.example            # Template for environment variables (API keys)
+├── .env.example            # Template for environment variables (API keys, security configs)
+├── .pre-commit-config.yaml # Pre-commit hooks configuration
+├── docker-compose.yml      # Orchestration configuration
 ├── pyproject.toml          # Python dependencies (managed by uv)
 └── Dockerfile              # Deployment configuration
 ```
