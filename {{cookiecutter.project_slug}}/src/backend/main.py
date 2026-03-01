@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from src.backend.core.config import settings
 from src.backend.api.v1.router import api_router
+from src.backend.core.security import get_api_key
 
 def get_application() -> FastAPI:
     app = FastAPI(
@@ -21,7 +22,7 @@ def get_application() -> FastAPI:
             allow_headers=["*"],
         )
 
-    app.include_router(api_router, prefix=settings.API_V1_STR)
+    app.include_router(api_router, prefix=settings.API_V1_STR, dependencies=[Depends(get_api_key)])
 
     return app
 
