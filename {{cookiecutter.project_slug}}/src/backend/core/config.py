@@ -1,11 +1,14 @@
 from typing import List, Union
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, field_validator, SecretStr
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "{{cookiecutter.project_name}}"
-    PROJECT_VERSION: str = "0.1.0"
+    PROJECT_VERSION: str = "0.1.1"
     API_V1_STR: str = "/api/v1"
+
+    # API Security
+    API_KEY: SecretStr
     
     # CORS Configuration
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
