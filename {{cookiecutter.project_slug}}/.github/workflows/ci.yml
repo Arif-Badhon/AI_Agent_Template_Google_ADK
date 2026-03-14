@@ -19,3 +19,5 @@ jobs:
         run: ruff check .
       - name: Run Tests
         run: pytest tests/
+      - name: Run Ruff (Lint & Security)
+        run: ruff check . --select S # S triggers security-related rules (e.g. hardcoded keys)
