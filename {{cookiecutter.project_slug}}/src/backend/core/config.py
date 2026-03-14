@@ -13,6 +13,18 @@ class Settings(BaseSettings):
     # CORS Configuration
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
+    # --- NEW: Admin & Auth ---
+    ADMIN_USER: str = "admin"
+    ADMIN_PASSWORD: SecretStr  # Using SecretStr for better security
+    
+    # --- NEW: LLM Cost Tracking ---
+    COST_PER_1M_INPUT_TOKENS: float = 0.075
+    COST_PER_1M_OUTPUT_TOKENS: float = 0.30
+    
+    # --- NEW: Infrastructure & Logging ---
+    LOG_FILE_PATH: str = "logs/app.log"
+    QDRANT_HOST: str = "localhost"
+
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str) and not v.startswith("["):
@@ -20,14 +32,12 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v
         raise ValueError(v)
+    
+
 
     class Config:
         case_sensitive = True
         env_file = ".env"
-    
-    # Pricing per 1M tokens (Example for Gemini 1.5 Flash)
-    COST_PER_1M_INPUT_TOKENS: float = 0.075 
-    COST_PER_1M_OUTPUT_TOKENS: float = 0.30
     
     # Simple Guardrail Config
     BANNED_KEYWORDS: list[str] = ["internal_password", "secret_key_123", "competitor_x"]

@@ -11,6 +11,28 @@ st.set_page_config(page_title="{{cookiecutter.project_name}}", page_icon="🤖")
 st.title("🤖 {{cookiecutter.project_name}}")
 st.markdown("Interact with your Google ADK-powered agent.")
 
+
+def check_password():
+    def password_entered():
+        # .get_secret_value() is required when using SecretStr
+        if st.session_state["password"] == settings.ADMIN_PASSWORD.get_secret_value():
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]
+        else:
+            st.session_state["password_correct"] = False
+    
+    if "password_correct" not in st.session_state:
+        st.session_state.password_correct = False
+    
+    if not st.session_state.password_correct:
+        st.sidebar.title("Admin Password Required")
+        password = st.sidebar.text_input("Password", type="password")
+        if st.sidebar.button("Submit"):
+            st.session_state.password = password
+            password_entered()
+    
+    if not st.session_state.password_correct:
+        st.stop()
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []

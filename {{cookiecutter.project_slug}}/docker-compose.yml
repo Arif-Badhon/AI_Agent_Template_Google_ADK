@@ -31,6 +31,39 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  admin_dashboard:
+    build: .
+    command: [ "uv", "run", "streamlit", "run", "src/interface/admin.py", "--server.port=8501" ]
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs # Share logs with the dashboard
+    depends_on:
+      - api
+
+  interface:
+    build: .
+    command: [ "uv", "run", "streamlit", "run", "src/interface/app.py", "--server.port=8502" ]
+    ports:
+      - "8502:8502"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs # Share logs with the dashboard
+    depends_on:
+      - api
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   qdrant_data:
   pg_data:
