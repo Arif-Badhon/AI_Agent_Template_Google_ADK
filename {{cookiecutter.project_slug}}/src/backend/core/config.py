@@ -7,6 +7,11 @@ class Settings(BaseSettings):
     PROJECT_VERSION: str = "0.1.1"
     API_V1_STR: str = "/api/v1"
 
+
+    # --- NEW: Google Config ---
+    GOOGLE_API_KEY: SecretStr
+    GOOGLE_PROJECT_ID: str = ""
+
     # API Security
     API_KEY: SecretStr
     
