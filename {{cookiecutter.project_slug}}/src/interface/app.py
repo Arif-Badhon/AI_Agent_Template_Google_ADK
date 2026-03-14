@@ -2,15 +2,12 @@ import streamlit as st
 import httpx
 import os
 from dotenv import load_dotenv
+from src.backend.core.config import settings
 
 # Load environment variables for the API Key
 load_dotenv()
 
 st.set_page_config(page_title="{{cookiecutter.project_name}}", page_icon="🤖")
-
-st.title("🤖 {{cookiecutter.project_name}}")
-st.markdown("Interact with your Google ADK-powered agent.")
-
 
 def check_password():
     def password_entered():
@@ -33,6 +30,10 @@ def check_password():
     
     if not st.session_state.password_correct:
         st.stop()
+
+st.title("🤖 {{cookiecutter.project_name}}")
+st.markdown("Interact with your Google ADK-powered agent.")
+
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
