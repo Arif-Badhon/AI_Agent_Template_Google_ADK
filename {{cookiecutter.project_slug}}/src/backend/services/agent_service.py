@@ -1,14 +1,24 @@
 from src.agents.base.factory import AgentFactory
 from .cache_service import SemanticCache
+from .llm_utils import LLMMonitor, Guardrail
 from google import genai # Assuming Google ADK/GenAI SDK
+from ..core.config import settings # Added import
 from loguru import logger
 import time
 
 class AgentOrchestrator:
     def __init__(self):
         self.agents = AgentFactory.build_from_config("config/agents.yaml")
-        self.client = genai.Client() # Initialize your LLM client
+        self.client = genai.Client(api_key=settings.GOOGLE_API_KEY) # Initialize your LLM client
         self.cache = SemanticCache()
+
+    async def get_embedding(self, text: str):
+        # Implementation for Google embedding
+        response = self.client.models.embed_content(
+            model="text-embedding-004",
+            contents=text
+        )
+        return response.embeddings[0].values
 
     async def get_best_agent(self, task: str) -> str:
         # Create a "menu" of available agents for the LLM
@@ -29,32 +39,28 @@ class AgentOrchestrator:
         return response.text.strip().lower()
 
     async def run_task(self, task: str):
-        # 1. Start the TOTAL timer immediately
         total_start = time.time()
         
-        # 2. Measure Embedding Latency (This is often a hidden bottleneck)
-        embed_start = time.time()
+        # 1. Embedding & Cache
         task_embedding = await self.get_embedding(task)
-        logger.debug(f"⏱️ Embedding generation took: {time.time() - embed_start:.4f}s")
-
-        # 3. Check Semantic Cache
-        cache_start = time.time()
         cached_hit = await self.cache.get_cached_response(task_embedding)
-        logger.debug(f"⏱️ Cache lookup took: {time.time() - cache_start:.4f}s")
         
         if cached_hit:
-            logger.info(f"🚀 Cache Hit! Total time: {time.time() - total_start:.4f}s")
+            logger.info(f"Cache Hit! Total time: {time.time() - total_start:.4f}s")
             return {"agent": "cache", "result": cached_hit, "cached": True}
 
-        # 4. Routing Logic (LLM Layer)
+        # 2. Routing
         agent_name = await self.get_best_agent(task)
-        selected_agent = self.agents[agent_name]
+        selected_agent = self.agents.get(agent_name)
+        if not selected_agent:
+            return {"error": "Agent not found"}
         
-        # 5. Execution (Orchestration Layer)
-        result = await selected_agent.execute(task)
+        # 3. Execution & Guardrails
+        raw_result = await selected_agent.execute(task)
+        safe_result = Guardrail.validate_output(raw_result)
 
-        # 6. Finalize Cache & Logging
-        await self.cache.save_to_cache(task_embedding, task, result)
+        # 4. Save to Cache
+        await self.cache.save_to_cache(task_embedding, task, safe_result)
         
-        logger.success(f"✅ Task completed. Total duration: {time.time() - total_start:.4f}s")
-        return {"agent": agent_name, "result": result, "cached": False}
+        logger.success(f"✅ Task completed in {time.time() - total_start:.4f}s")
+        return {"agent": agent_name, "result": safe_result, "cached": False}
