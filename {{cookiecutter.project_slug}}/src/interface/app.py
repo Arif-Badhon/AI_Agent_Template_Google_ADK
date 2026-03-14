@@ -54,7 +54,8 @@ if prompt := st.chat_input("What is your task today?"):
         try:
             # Call your FastAPI backend
             # Note: Ensure your backend is running on localhost:8000
-            API_URL = "http://localhost:8000/api/v1/task" # Example endpoint
+            base_url = os.getenv("API_BASE_URL", "http://localhost:8000")
+            API_URL = f"{base_url}/api/v1/task" 
             HEADERS = {"X-API-Key": os.getenv("API_KEY", "")}
             
             response = httpx.post(
