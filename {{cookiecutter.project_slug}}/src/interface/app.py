@@ -6,32 +6,31 @@ from src.backend.core.config import settings
 
 # Load environment variables for the API Key
 load_dotenv()
-
 st.set_page_config(page_title="{{cookiecutter.project_name}}", page_icon="🤖")
 
-if not check_password(): st.stop()
-
+# FIX: Define the function BEFORE calling it
 def check_password():
+    if "password_correct" not in st.session_state:
+        st.session_state.password_correct = False
+    
+    if st.session_state.password_correct:
+        return True
+
     def password_entered():
-        # .get_secret_value() is required when using SecretStr
         if st.session_state["password"] == settings.ADMIN_PASSWORD.get_secret_value():
             st.session_state["password_correct"] = True
             del st.session_state["password"]
         else:
             st.session_state["password_correct"] = False
-    
-    if "password_correct" not in st.session_state:
-        st.session_state.password_correct = False
-    
-    if not st.session_state.password_correct:
-        st.sidebar.title("Admin Password Required")
-        password = st.sidebar.text_input("Password", type="password")
-        if st.sidebar.button("Submit"):
-            st.session_state.password = password
-            password_entered()
-    
-    if not st.session_state.password_correct:
-        st.stop()
+
+    st.sidebar.title("Access Required")
+    st.sidebar.text_input("Enter Password", type="password", key="password", on_change=password_entered)
+    return st.session_state.password_correct
+
+# FIX: Now call it safely
+if not check_password():
+    st.info("Please enter the password in the sidebar to continue.")
+    st.stop()
 
 st.title("🤖 {{cookiecutter.project_name}}")
 st.markdown("Interact with your Google ADK-powered agent.")
