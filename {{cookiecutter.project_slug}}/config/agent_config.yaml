@@ -1,0 +1,11 @@
+agents:
+  - name: "researcher"
+    class: "ResearcherAgent"
+    description: "Use this agent for gathering facts, searching the web, or verifying data."
+  - name: "writer"
+    class: "WriterAgent"
+    description: "Use this agent for summarizing text, writing emails, or creating reports."
+  # Users can easily add more here:
+  # - name: "coder"
+  #   class: "CodingAgent"
+  #   description: "Use this agent for writing or fixing Python code."

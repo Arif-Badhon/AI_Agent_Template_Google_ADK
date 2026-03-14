@@ -1,23 +1,35 @@
-# This service isolates the API from the complexity of the Agent Logic
-from src.agents.base.base_agent import BaseAgent
-# from src.agents.specialized.reporter import ReporterAgent (Example)
-from .llm_utils import LLMMonitor, Guardrail
+from src.agents.base.factory import AgentFactory
+from google import genai # Assuming Google ADK/GenAI SDK
 
 class AgentOrchestrator:
     def __init__(self):
-        # Initialize your agents here
-        # self.reporter = ReporterAgent()
-        pass
+        self.agents = AgentFactory.build_from_config("config/agents.yaml")
+        self.client = genai.Client() # Initialize your LLM client
 
-    async def run_task(self, prompt: str):
-        # 1. Logic to call Google ADK / Gemini
-        response = await self.client.generate_content(prompt) # Hypothetical ADK call
+    async def get_best_agent(self, task: str) -> str:
+        # Create a "menu" of available agents for the LLM
+        agent_menu = "\n".join([f"- {name}: {a.description}" for name, a in self.agents.items()])
         
-        # 2. Extract token counts (Google ADK usually provides usage_metadata)
-        usage = response.usage_metadata
-        LLMMonitor.calculate_cost(usage.prompt_token_count, usage.candidates_token_count)
+        prompt = f"""
+        Given the following task: "{task}"
+        Which of these agents is best suited to handle it?
+        {agent_menu}
         
-        # 3. Apply Guardrails
-        safe_response = Guardrail.validate_output(response.text)
+        Respond with ONLY the name of the agent.
+        """
         
-        return safe_response
+        response = self.client.models.generate_content(
+            model="gemini-1.5-flash", 
+            contents=prompt
+        )
+        return response.text.strip().lower()
+
+    async def run_task(self, task: str):
+        agent_name = await self.get_best_agent(task)
+        
+        if agent_name in self.agents:
+            selected_agent = self.agents[agent_name]
+            result = await selected_agent.execute(task)
+            return {"agent": agent_name, "result": result}
+        
+        return {"error": f"No suitable agent found for: {agent_name}"}
