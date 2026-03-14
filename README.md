@@ -164,6 +164,29 @@ In a new terminal, start the Streamlit interface:
 ```bash
 uv run streamlit run src/interface/app.py
 
+
+
+## ☸️ Kubernetes Deployment
+
+This template comes with production-ready Kubernetes manifests in the `k8s/` directory.
+
+1. **Build and push your Docker images** to your container registry.
+2. **Update the image names** in `k8s/02-backend.yaml` and `k8s/03-frontend.yaml`.
+3. **Set your secrets** in `k8s/01-config.yaml`.
+4. **Apply the manifests:**
+
+\`\`\`bash
+kubectl apply -f k8s/01-config.yaml
+kubectl apply -f k8s/02-backend.yaml
+kubectl apply -f k8s/03-frontend.yaml
+\`\`\`
+
+*Note: The Admin Dashboard service is set to `ClusterIP` for security. To access it, use port forwarding:*
+\`\`\`bash
+kubectl port-forward svc/admin-service 8501:8501 -n YOUR_PROJECT_NAME-prod
+\`\`\`
+
+
 ## 📦 Dependency Management
 
 This project uses **uv** for all package management.
