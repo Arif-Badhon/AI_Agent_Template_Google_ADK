@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: interface-deployment
+  namespace: {{cookiecutter.project_slug}}-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agent-interface
+  template:
+    metadata:
+      labels:
+        app: agent-interface
+    spec:
+      containers:
+      - name: interface
+        image: your-docker-registry.com/{{cookiecutter.project_slug}}-interface:latest
+        ports:
+        - containerPort: 8502
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: interface-service
+  namespace: {{cookiecutter.project_slug}}-prod
+spec:
+  type: LoadBalancer # Exposes the UI to the outside world
+  selector:
+    app: agent-interface
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8502
+---
+# Admin Dashboard Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-deployment
+  namespace: {{cookiecutter.project_slug}}-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agent-admin
+  template:
+    metadata:
+      labels:
+        app: agent-admin
+    spec:
+      containers:
+      - name: admin-dashboard
+        image: your-docker-registry.com/{{cookiecutter.project_slug}}-admin:latest
+        ports:
+        - containerPort: 8501
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-service
+  namespace: {{cookiecutter.project_slug}}-prod
+spec:
+  type: ClusterIP # Keep Admin internal, access via port-forwarding for security
+  selector:
+    app: agent-admin
+  ports:
+    - protocol: TCP
+      port: 8501
+      targetPort: 8501
