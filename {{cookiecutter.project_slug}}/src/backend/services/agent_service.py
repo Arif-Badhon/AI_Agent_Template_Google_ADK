@@ -8,7 +8,7 @@ import time
 
 class AgentOrchestrator:
     def __init__(self):
-        self.agents = AgentFactory.build_from_config("config/agents.yaml")
+        self.agents = AgentFactory.build_from_config("config/agent_config.yaml")
         self.client = genai.Client(api_key=settings.GOOGLE_API_KEY) # Initialize your LLM client
         self.cache = SemanticCache()
 
