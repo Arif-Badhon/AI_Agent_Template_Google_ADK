@@ -9,7 +9,7 @@ import time
 class AgentOrchestrator:
     def __init__(self):
         self.agents = AgentFactory.build_from_config("config/agent_config.yaml")
-        self.client = genai.Client(api_key=settings.GOOGLE_API_KEY) # Initialize your LLM client
+        self.client = genai.Client(api_key=settings.GOOGLE_API_KEY.get_secret_value()) # Initialize your LLM client
         self.cache = SemanticCache()
 
     async def get_embedding(self, text: str):
@@ -55,11 +55,22 @@ class AgentOrchestrator:
         if not selected_agent:
             return {"error": "Agent not found"}
         
-        # 3. Execution & Guardrails
-        raw_result = await selected_agent.execute(task)
-        safe_result = Guardrail.validate_output(raw_result)
+        # FIX: Track costs and apply safety guardrails
+        # Note: Ensure your specialized agents' .execute() returns a response object 
+        # that includes .usage_metadata for accurate tracking.
+        execution_response = await selected_agent.execute(task)
+        
+        # Extract metadata if available
+        if hasattr(execution_response, 'usage_metadata'):
+            LLMMonitor.calculate_cost(
+                execution_response.usage_metadata.prompt_token_count,
+                execution_response.usage_metadata.candidates_token_count
+            )
 
-        # 4. Save to Cache
+        # Apply guardrails to the result text
+        result_text = getattr(execution_response, 'text', str(execution_response))
+        safe_result = Guardrail.validate_output(result_text)
+
         await self.cache.save_to_cache(task_embedding, task, safe_result)
         
         logger.success(f"✅ Task completed in {time.time() - total_start:.4f}s")
