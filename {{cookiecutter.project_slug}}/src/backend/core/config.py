@@ -24,5 +24,12 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+    
+    # Pricing per 1M tokens (Example for Gemini 1.5 Flash)
+    COST_PER_1M_INPUT_TOKENS: float = 0.075 
+    COST_PER_1M_OUTPUT_TOKENS: float = 0.30
+    
+    # Simple Guardrail Config
+    BANNED_KEYWORDS: list[str] = ["internal_password", "secret_key_123", "competitor_x"]
 
 settings = Settings()
