@@ -9,6 +9,8 @@ load_dotenv()
 
 st.set_page_config(page_title="{{cookiecutter.project_name}}", page_icon="🤖")
 
+if not check_password(): st.stop()
+
 def check_password():
     def password_entered():
         # .get_secret_value() is required when using SecretStr
