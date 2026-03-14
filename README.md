@@ -178,5 +178,3 @@ Contributions, issues, and feature requests are welcome! Let's make building ent
 ## 📄 License
 
 MIT
-
-```
