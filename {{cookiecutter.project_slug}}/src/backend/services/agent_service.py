@@ -1,6 +1,8 @@
 from src.agents.base.factory import AgentFactory
 from .cache_service import SemanticCache
 from google import genai # Assuming Google ADK/GenAI SDK
+from loguru import logger
+import time
 
 class AgentOrchestrator:
     def __init__(self):
@@ -27,22 +29,32 @@ class AgentOrchestrator:
         return response.text.strip().lower()
 
     async def run_task(self, task: str):
-        # 1. Generate embedding for the incoming task
-        # (Assuming you have an embedding utility)
+        # 1. Start the TOTAL timer immediately
+        total_start = time.time()
+        
+        # 2. Measure Embedding Latency (This is often a hidden bottleneck)
+        embed_start = time.time()
         task_embedding = await self.get_embedding(task)
+        logger.debug(f"⏱️ Embedding generation took: {time.time() - embed_start:.4f}s")
 
-        # 2. Check Semantic Cache
+        # 3. Check Semantic Cache
+        cache_start = time.time()
         cached_hit = await self.cache.get_cached_response(task_embedding)
+        logger.debug(f"⏱️ Cache lookup took: {time.time() - cache_start:.4f}s")
+        
         if cached_hit:
-            logger.info("🚀 Semantic Cache Hit! Skipping LLM call.")
+            logger.info(f"🚀 Cache Hit! Total time: {time.time() - total_start:.4f}s")
             return {"agent": "cache", "result": cached_hit, "cached": True}
 
-        # 3. If no hit, proceed with routing and execution
+        # 4. Routing Logic (LLM Layer)
         agent_name = await self.get_best_agent(task)
         selected_agent = self.agents[agent_name]
+        
+        # 5. Execution (Orchestration Layer)
         result = await selected_agent.execute(task)
 
-        # 4. Save the new result to cache for next time
+        # 6. Finalize Cache & Logging
         await self.cache.save_to_cache(task_embedding, task, result)
         
+        logger.success(f"✅ Task completed. Total duration: {time.time() - total_start:.4f}s")
         return {"agent": agent_name, "result": result, "cached": False}
