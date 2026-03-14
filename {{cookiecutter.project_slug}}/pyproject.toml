@@ -32,7 +32,7 @@ dependencies = [
     "gunicorn",   # For production deployment
     "httpx",      # For async requests
     "loguru",      # Better logging
-    "streamlit".  # Chat interface
+    "streamlit"  # Chat interface
 ]
 
 [project.optional-dependencies]
