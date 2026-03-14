@@ -27,7 +27,7 @@ spec:
         # Bulletproof health checks
         readinessProbe:
           httpGet:
-            path: /api/v1/health
+            path: /health
             port: 8000
           initialDelaySeconds: 5
           periodSeconds: 10
