@@ -157,6 +157,13 @@ uv run src/agents/base_agent.py
 uv run uvicorn src.backend.main:app --reload
 ```
 
+### 5. Run the Chat UI
+
+In a new terminal, start the Streamlit interface:
+
+```bash
+uv run streamlit run src/interface/app.py
+
 ## 📦 Dependency Management
 
 This project uses **uv** for all package management.
